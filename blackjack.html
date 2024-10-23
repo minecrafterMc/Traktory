@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>blackjack</title>
+</head>
+
+<body>
+  <p id="out"> </p> <button onclick="play('pick')"> pick </button> <button onclick="play('fold')"> fold </button>
+  <script>
+    function RandomInt(min, max) {
+      min = Math.ceil(min);
+      max = Math.floor(max);
+      return Math.floor(Math.random() * (max - min + 1) + min);
+    }
+    var dealer = RandomInt(1, 21);
+    var player = 0;
+    const output = document.getElementById("out");
+
+    function play(action) {
+      if (action === "pick") {
+        player += RandomInt(1, 9);
+        output.innerHTML = "player: " + player;
+      } else if (action === "fold") { checkWinner(); }
+      if (player > 21) {
+        output.innerHTML = "dealer wins";
+        setTimeout(reload, 1000);
+      }
+      if (dealer > 21) {
+        output.innerHTML = "player wins";
+        setTimeout(reload, 1000);
+      }
+    }
+
+    function checkWinner() {
+      if (dealer < player && player <= 21) {
+        output.innerHTML = "player wins (dealer: " + dealer + ", player: " + player + ")"; //setTimeout(reload,1000); 
+      }
+    }
+
+    function reload() { location.reload(); }
+  </script>
+</body>
+
+</html>

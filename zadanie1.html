@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title></title>
+</head>
+
+<body>
+  <p id="informacje1"></p><img id="img1">
+  <p id="informacje2"></p><img id="img2">
+  <p id="informacje3"></p><img id="img3">
+  <h1 id="winner"></h1>
+<script>
+  // minigra z pseudolosowością
+  // wyścigi traktorów
+  // użytkownik podaje nazwę swojego modelu
+  // 3 traktory się scigją
+  // 4 dowolne statystyki każdego traktora
+  // statystyki mają losowany modyfikator od -2 do 2
+  
+  
+  const bonusPoints = sessionStorage.getItem("points") / 100;
+  // funkcja od losowości
+  function RandomInt(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min + 1) + min);
+}
+const informacje1 = document.getElementById("informacje1"); // zapisujemy paragrafy informacje do zmiennych
+const informacje2 = document.getElementById("informacje2");
+const informacje3 = document.getElementById("informacje3");
+const img1 = document.getElementById("img1");
+const img2 = document.getElementById("img2");
+const img3 = document.getElementById("img3");
+//tablica z danymi traktorów
+  var traktory = [];
+  var playerName = prompt("podaj nazwę swojego traktora");
+  //możliwe losowe nazwy:
+  var names = ["traktor","traktorr","traktorrr","traktorrrr"];
+  // generujemy 3 traktory
+  for (let i = 0; i<3;i++){
+    traktory[i] = {}; // robimy pusty obiekt (to chyba wiecie o co chodzi z PM6)
+    traktory[i].debuff = RandomInt(-2,2)//losujemy debuff
+    // przypisujemy losowe statystyki dla traktorów
+    traktory[i].speed = 5 + RandomInt(1,10) - traktory[i].debuff;
+    traktory[i].driver = 5 + RandomInt(1,10)- traktory[i].debuff;
+    traktory[i].engine = 5 + RandomInt(1,10)- traktory[i].debuff;
+    traktory[i].acceleration = 5 + RandomInt(1,10)- traktory[i].debuff;
+    //wybieramy losowe zdjęcie
+    traktory[i].img = "./img/traktor"+ RandomInt(1,6) + ".jpeg";
+    // na początku wyliczałem średnią a nie sumę, i nie chciało mi się zmianiać nazwy zmiennej z avarage na sum
+    traktory[i].avarage = traktory[i].speed + traktory[i].driver + traktory[i].engine + traktory[i].acceleration;
+    if (i == 0){
+      traktory[i].avarage += bonusPoints;
+    }
+    if (i == 0){
+      traktory[i].name = playerName;
+      // jeżeli jest to pierwszy traktor, dajemy mu nazwę wybraną przez gracza
+    }
+    else{
+    traktory[i].name = names[RandomInt(0,names.length - 1)]; // losujemy nazwę  z tablicy names
+    }
+  }
+  // wypisujemy dane traktorów do paragrafów
+  informacje1.innerHTML = "nazwa: " + traktory[0].name + "<br>prędkość: " + traktory[0].speed + "<br>kierowca: " + traktory[0].driver + "<br>przyśpieszenie: " + traktory[0].acceleration + "<br>silnik: " + traktory[0].engine +   "<br>suma: " + (traktory[0].avarage - bonusPoints) + ", tetis bonus: " + bonusPoints + "<br>wynik końcowy: " + traktory[0].avarage;
+  img1.src = traktory[0].img; // dodajemy źródła do zdjęć
+  informacje2.innerHTML = "nazwa: " + traktory[1].name + "<br>prędkość: " + traktory[1].speed + "<br>kierowca: " + traktory[1].driver + "<br>przyśpieszenie: " + traktory[1].acceleration + "<br>silnik: " + traktory[1].engine +   "<br>suma: " + traktory[1].avarage;
+  img2.src = traktory[1].img;
+  informacje3.innerHTML = "nazwa: " + traktory[2].name + "<br>prędkość: " + traktory[2].speed + "<br>kierowca: " + traktory[2].driver + "<br>przyśpieszenie: " + traktory[2].acceleration + "<br>silnik: " + traktory[2].engine +   "<br>suma: " + traktory[2].avarage;
+  img3.src = traktory[2].img;
+  const winner = document.getElementById("winner"); // zapisujemy nagłowek do zmiennej
+  //określamy kto wygrywa
+  var winners = []; //lista ze zwyięscami na wypadek remisu
+  var biggestAvarage = 0;
+  for (let i = 0;i<traktory.length; i++){
+    if (traktory[biggestAvarage].avarage < traktory[i].avarage){
+      biggestAvarage = i; // jeżeli średnia statystyk jest większa niż poprzednia znaleziona największa, nadpisujemy ją 
+      winners = [i]; // usuwamy wszystkich zwycięsców jeśli mamy kogoś z większyą sumą
+    }
+    else if (traktory[biggestAvarage].avarage == traktory[i].avarage){
+      winners.push(i); // dodajemy do zwycięsców jeżeli jet remis
+    }
+  }
+  if (winners.length > 1){
+    winner.innerHTML = "Remis. Zwycięsccy: ";
+    //dodajemy nazwy wszystkich zwycięscców do nagłówka
+    for (let i = 0;i<winners.length;i++){
+      winner.innerHTML += traktory[winners[i]].name + ", ";
+    }
+  }
+  else{
+  winner.innerHTML = "zwycięsca: " + traktory[biggestAvarage].name; // wypisujemy nazwę traktora z największą średnią
+  }
+</script>
+</body>
+
+</html>
